@@ -5,18 +5,66 @@ import ApiFetch from "./components/ApiFetch";
 // import Basic2 from "./components/Basic2";
 // import BasicUseEffect from "./components/BasicUseEffect";
 // import TimerContainer from "./components/TimerContainer";
+import AppContext from "./contexts/AppContext";
+import B from "./components/B";
+import BasicReducer from "./components/BasicReducer";
+import CompB from "./components/CompB";
+import Memo from "./components/Memo";
+
+import { useReducer, useState, useCallback } from "react";
+import CountDisplay from "./components/CountDisplay";
+import CountClick from "./components/CountClick";
+
+const initialState = 0;
+const reducer = (currentState, action) => {
+  switch (action) {
+    case "add_1":
+      return currentState + 1;
+    case "multiple_3":
+      return currentState * 3;
+    case "reset":
+      return initialState;
+    default:
+      return currentState;
+  }
+};
 
 function App() {
+  const [count, dispatch] = useReducer(reducer, initialState);
+
+  const [count1, SetCount1] = useState(0);
+  const [count2, SetCount2] = useState(0);
+
+  const AddCount1 = useCallback(() => {
+    SetCount1((preCount1) => preCount1 + 1);
+  }, [count1]);
+  const AddCount2 = useCallback(() => {
+    SetCount2((preCount2) => preCount2 + 1);
+  }, [count2]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {/* <Basic2 /> */}
-        {/* <BasicUseEffect /> */}
-        {/* <TimerContainer /> */}
-        <ApiFetch />
-      </header>
-    </div>
+    <AppContext.Provider
+      value={{ countProvided: count, dispatchProvided: dispatch }}
+    >
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          {/* <Basic2 /> */}
+          {/* <BasicUseEffect /> */}
+          {/* <TimerContainer /> */}
+          {/* <ApiFetch />
+          <B /> */}
+          {/* <BasicReducer /> */}
+          {/* Count {count}
+          <CompB /> */}
+          {/* <Memo /> */}
+          <CountDisplay name="count1" count={count1} />
+          <CountClick handleClick={AddCount1}>AddCount1</CountClick>
+          <CountDisplay name="count2" count={count2} />
+          <CountClick handleClick={AddCount2}>AddCount2</CountClick>
+        </header>
+      </div>
+    </AppContext.Provider>
   );
 }
 
